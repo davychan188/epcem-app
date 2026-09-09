@@ -50,11 +50,15 @@ python3 -m http.server 8080
 
 資料存在該部手機 `localStorage`（key: `epcem2`），未接雲端。重置：App「我的」→ 重置示範數據。
 
+## 相機
+
+前線打開工單 → 撳「施工前」／「施工後」→ 手機會開相機（或相簿）。要 **https**（GitHub Pages 已係）。相片會壓縮後存喺本機；換機／清瀏覽器會冇。跨手機同步仍未做。
+
 ## 建議之後接上 GitHub 一齊做
 
 - [ ] 用 GitHub Issues 記場地／工種清單
 - [ ] 接 Supabase 或 Firebase（帳戶、多機同步、相片 Storage）
-- [ ] 真實 `<input type="file" accept="image/*" capture="environment">` 開相機
+- [x] 真實 `<input type="file" accept="image/*" capture="environment">` 開相機
 - [ ] 匯出對康文署「附相片工作報告」PDF
 - [ ] 需要時再用 Capacitor / Flutter 包 APK、上架
 

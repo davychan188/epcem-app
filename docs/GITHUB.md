@@ -22,6 +22,4 @@ GitHub 網頁上載：
 
 Pages：
 
-Settings → Pages → Deploy from a branch → `main` → `/public` → Save
-
-若介面無 `/public` 選項：把 `public` 內四個檔（index.html, manifest.json, sw.js, icon.svg）放到 repo 根目錄再開 Pages（folder `/`）。
+Settings → Pages → Deploy from a branch → `main` → `/`（root）→ Save

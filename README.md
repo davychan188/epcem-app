@@ -9,7 +9,7 @@ PWA App：派工、GPS 打卡、施工前／後相片、完工提交、組長審
 ## 目錄
 
 ```
-public/          可直接部署的 PWA（GitHub Pages 用呢個資料夾）
+根目錄          PWA（GitHub Pages 由 / 部署）
   index.html     App 介面
   manifest.json  加到主畫面
   sw.js          離線快取
@@ -21,7 +21,6 @@ docs/            概念規格 Word
 ## 本機預覽
 
 ```bash
-cd public
 python3 -m http.server 8080
 ```
 
@@ -33,7 +32,7 @@ python3 -m http.server 8080
 2. 上載本資料夾全部檔案
 3. Repo → Settings → Pages
    - Source: Deploy from a branch
-   - Branch: `main` / folder `/public`（若 GitHub 只准 root，改為把 `public` 內容放到 repo 根目錄）
+   - Branch: `main` / folder `/`（root）
 4. 等 1–2 分鐘，會有網址：
    `https://<你的帳號>.github.io/epcem-app/`
 5. 前線用手機打開該網址

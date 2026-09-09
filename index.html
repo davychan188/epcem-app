@@ -3,114 +3,245 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"/>
-<meta name="theme-color" content="#14532d"/>
+<meta name="theme-color" content="#166534"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="EPCEM"/>
-<title>EPCEM</title>
+<title>樹木工作紀錄</title>
 <link rel="manifest" href="manifest.json"/>
-<link rel="apple-touch-icon" href="icon.svg"/>
+<link rel="icon" href="icon.svg"/>
 <style>
-:root{--g:#14532d;--g2:#166534;--bg:#eef4ee;--card:#fff;--t:#0f172a;--m:#64748b;--line:#d9e6d9}
+:root{--g:#166534;--g2:#15803d;--bg:#f0fdf4;--card:#fff;--line:#d1fae5;--muted:#64748b;--danger:#b91c1c}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang HK","PingFang TC",sans-serif}
-body{padding-top:env(safe-area-inset-top);padding-bottom:calc(72px + env(safe-area-inset-bottom))}
-.appbar{background:linear-gradient(180deg,#14532d,#166534);color:#fff;padding:12px 16px 14px;position:sticky;top:0;z-index:30}
-.appbar .brand{font-size:11px;letter-spacing:.12em;opacity:.75;font-weight:700}
-.appbar h1{margin:2px 0 0;font-size:20px}
-.appbar .meta{font-size:12px;opacity:.9;margin-top:2px}
-.tabs-role{display:flex;gap:6px;margin-top:10px}
-.tabs-role b{flex:1;text-align:center;background:rgba(255,255,255,.12);border-radius:10px;padding:8px 0;font-size:13px;font-weight:700}
-.tabs-role b.on{background:#fff;color:var(--g)}
-.wrap{padding:12px}
-.card{background:var(--card);border-radius:16px;padding:14px;margin:0 0 10px;box-shadow:0 1px 2px rgba(15,23,42,.05)}
-.job{display:flex;gap:10px;align-items:flex-start}
-.job .ico{width:42px;height:42px;border-radius:12px;background:#ecfdf3;color:#166534;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
-.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.kpi .card{margin:0;text-align:center;padding:12px 4px}
-.kpi b{font-size:22px;color:var(--g2);display:block}
-.kpi span{font-size:11px;color:var(--m)}
-.tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;white-space:nowrap}
-.s-wait{background:#f1f5f9;color:#475569}
-.s-do{background:#dbeafe;color:#1d4ed8}
-.s-pend{background:#ffedd5;color:#c2410c}
-.s-ok{background:#dcfce7;color:#15803d}
-.s-back{background:#fee2e2;color:#b91c1c}
-.muted{color:var(--m);font-size:13px}
-.title{font-weight:800;font-size:16px;line-height:1.3}
-.sub{color:var(--m);font-size:13px;margin-top:3px}
-.btn,.btn2,.btn3,.btn4{display:block;width:100%;border:0;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:800;background:var(--g2);color:#fff;margin-top:8px}
-.btn2{background:#ecfdf3;color:var(--g)}
-.btn3{background:#e2e8f0;color:#334155}
-.btn4{background:#d97706;color:#fff}
-label{display:block;font-size:12px;font-weight:700;color:var(--m);margin:8px 0 4px}
-input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;font-family:inherit;background:#fff}
-.photos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ph{height:110px;border:1.5px dashed #9cb89c;border-radius:14px;background:#f8fbf8;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--m);font-size:13px;font-weight:700;overflow:hidden}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;background:var(--bg);color:#0f172a;padding-bottom:88px}
+header{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:16px 16px 14px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:18px;font-weight:700}
+header p{margin:4px 0 0;font-size:12px;opacity:.9}
+main{padding:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+label{display:block;font-size:13px;font-weight:600;margin:10px 0 6px}
+input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;font-family:inherit;background:#fff}
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.photos3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.ph{aspect-ratio:1;border:2px dashed #86efac;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--g);font-size:13px;font-weight:600;background:#f8fafc;overflow:hidden;position:relative}
 .ph img{width:100%;height:100%;object-fit:cover}
-nav{position:fixed;left:0;right:0;bottom:0;background:#fff;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:40}
-nav button{border:0;background:none;padding:10px 0 8px;font-size:11px;font-weight:700;color:#94a3b8}
-nav button.on{color:var(--g2)}
-nav button span{display:block;font-size:18px;line-height:1.1}
-.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 16px;border-radius:99px;font-size:13px;font-weight:700;display:none;z-index:50}
-.help{background:#ecfdf3;color:#14532d;border-radius:14px;padding:12px;font-size:13px;margin-bottom:12px;line-height:1.5}
+.ph small{display:block;font-weight:500;color:var(--muted);font-size:11px;margin-top:4px}
+.btn{width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:700;background:var(--g);color:#fff;margin-top:10px}
+.btn2{background:#fff;color:var(--g);border:1px solid var(--g)}
+.btn3{background:#e2e8f0;color:#334155}
+.btn4{background:#fef2f2;color:var(--danger)}
+.btn:disabled{opacity:.5}
+.muted{color:var(--muted);font-size:12px;line-height:1.5}
+.help{background:#ecfdf5;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:10px;color:#14532d}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.title{font-weight:700;font-size:15px}
+.tag{font-size:11px;padding:3px 8px;border-radius:999px;background:#dcfce7;color:#166534;font-weight:600}
+.tag.wait{background:#fef9c3;color:#854d0e}
+.toast{display:none;position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 14px;border-radius:999px;font-size:13px;z-index:20;max-width:90%}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr 1fr;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:10}
+nav button{border:0;background:transparent;padding:8px;font-size:11px;color:var(--muted)}
+nav button.on{color:var(--g);font-weight:700}
+nav span{display:block;font-size:18px;margin-bottom:2px}
+.empty{text-align:center;color:var(--muted);padding:28px 10px}
 </style>
 </head>
 <body>
-<div class="appbar">
-  <div class="brand">EPCEM APP</div>
-  <h1>康文署前線工作</h1>
-  <div class="meta" id="who">未登入</div>
-  <div class="tabs-role">
-    <b id="r1" class="on" onclick="setRole('front')">前線同事</b>
-    <b id="r2" onclick="setRole('lead')">組長審核</b>
-  </div>
-</div>
-<div class="wrap" id="app"></div>
+<header>
+  <h1>樹木工作紀錄</h1>
+  <p>前線用 · 樹木號碼 + 事前／事後相 · 可分享俾公司</p>
+</header>
+<main id="app"></main>
 <nav>
-  <button class="on" id="n-home" onclick="go('home')"><span>📋</span>今日</button>
-  <button id="n-jobs" onclick="go('jobs')"><span>🌳</span>工單</button>
-  <button id="n-talk" onclick="go('talk')"><span>💬</span>溝通</button>
-  <button id="n-me" onclick="go('me')"><span>👤</span>我的</button>
+  <button class="on" id="n-new" onclick="go('new')"><span>➕</span>新紀錄</button>
+  <button id="n-list" onclick="go('list')"><span>🌳</span>本機紀錄</button>
+  <button id="n-me" onclick="go('me')"><span>ℹ️</span>說明</button>
 </nav>
 <div class="toast" id="toast"></div>
 <input type="file" id="cam" accept="image/*" capture="environment" style="position:fixed;left:-9999px;width:1px;height:1px;opacity:0" onchange="onCam(event)"/>
 <script>
-const NAMES={WAT:"灌溉",WEED:"除草","PRN-S":"灌木修剪","PRN-T":"喬木修剪",FERT:"施肥",PEST:"病蟲害",INSP:"巡查",COMP:"投訴",TYPH:"風後清理"};
-const ICO={WAT:"水",WEED:"草","PRN-S":"剪","PRN-T":"樹",FERT:"肥",PEST:"蟲",INSP:"查",COMP:"訴",TYPH:"風"};
-const SEED=[
-  {id:"WO-0909-01",site:"觀塘海濱花園",zone:"入口花槽",code:"WEED",qty:1200,unit:"m²",team:"A隊",who:"黃麗娟",status:"進行中",due:"今天",pri:"高"},
-  {id:"WO-0909-02",site:"觀塘海濱花園",zone:"海濱行道樹",code:"PRN-T",qty:12,unit:"株",team:"A隊",who:"李偉明",status:"待開工",due:"今天",pri:"高"},
-  {id:"WO-0909-03",site:"深旺道路旁樹穴",zone:"全段",code:"WAT",qty:86,unit:"株",team:"B隊",who:"吳美儀",status:"待審核",due:"今天",pri:"中"},
-  {id:"WO-0909-04",site:"深水埗公園",zone:"籃球場入口",code:"COMP",qty:1,unit:"宗",team:"B隊",who:"林志豪",status:"待開工",due:"今天",pri:"高"},
-  {id:"WO-0909-05",site:"摩士公園",zone:"全場",code:"INSP",qty:1,unit:"場",team:"巡查組",who:"鄭大文",status:"待開工",due:"明天",pri:"中"}
-];
 const $=id=>document.getElementById(id);
-function load(){try{const x=JSON.parse(localStorage.getItem("epcem2"));return x&&x.length?x:JSON.parse(JSON.stringify(SEED));}catch(e){return JSON.parse(JSON.stringify(SEED));}}
-function save(){localStorage.setItem("epcem2",JSON.stringify(data));}
-let data=load(), role=localStorage.getItem("epcem_role")||"front", page="home", cur=null;
-function toast(t){const el=$("toast");el.textContent=t;el.style.display="block";setTimeout(()=>el.style.display="none",1800);}
-function setRole(r){role=r;localStorage.setItem("epcem_role",r);$("r1").classList.toggle("on",r==="front");$("r2").classList.toggle("on",r==="lead");go(page==="me"?"me":"home");}
-function go(p){page=p;cur=null;document.querySelectorAll("nav button").forEach(b=>b.classList.remove("on"));({home:"n-home",jobs:"n-jobs",talk:"n-talk",me:"n-me"})[p]&&$( {home:"n-home",jobs:"n-jobs",talk:"n-talk",me:"n-me"}[p] ).classList.add("on");render();}
-function tag(s){const c={待開工:"s-wait",進行中:"s-do",待審核:"s-pend",已審核:"s-ok",退回:"s-back"};return '<span class="tag '+(c[s]||"s-wait")+'">'+s+"</span>";}
-function render(){$("who").textContent=role==="front"?"前線 · A隊 黃麗娟（示範）":"組長 · 陳志強（示範）";if(cur)return jobView();if(page==="home")home();else if(page==="jobs")jobs();else if(page==="talk")talk();else me();}
-function jobCard(j){return '<div class="card" onclick="openJob(\''+j.id+'\')"><div class="job"><div class="ico">'+(ICO[j.code]||"工")+'</div><div style="flex:1"><div style="display:flex;justify-content:space-between;gap:8px"><div class="title">'+(NAMES[j.code]||j.code)+"</div>"+tag(j.status)+'</div><div class="sub">'+j.site+" · "+j.zone+'</div><div class="muted">'+j.qty+" "+j.unit+" · "+j.who+" · "+j.due+(j.pri==="高"?" · 優先":"")+"</div></div></div></div>";}
-function home(){const list=role==="front"?data.filter(j=>j.team==="A隊"&&j.due==="今天"):data.filter(j=>j.due==="今天");const pend=data.filter(j=>j.status==="待審核").length;const doing=list.filter(j=>j.status==="進行中").length;$("app").innerHTML='<div class="kpi"><div class="card"><b>'+list.length+'</b><span>今日</span></div><div class="card"><b>'+doing+'</b><span>進行中</span></div><div class="card"><b>'+(role==="lead"?pend:list.filter(j=>j.status==="待審核"||j.status==="已審核").length)+"</b><span>"+(role==="lead"?"待我審":"已交")+"</span></div></div>"+(role==="front"?'<div class="help">按工單 → 到場打卡 → 拍前／後相 → 填數量提交。無網絡也可先存。</div>':'<div class="help">先審「待審核」。無相片或數量不對就退回。</div>')+(list.map(jobCard).join("")||'<div class="card" style="text-align:center;color:#64748b">今日暫無工單</div>');}
-function jobs(){const list=role==="front"?data.filter(j=>j.team==="A隊"):data;$("app").innerHTML='<div class="muted" style="margin:0 0 8px">全部 '+list.length+" 張</div>"+list.map(jobCard).join("");}
-function openJob(id){cur=data.find(j=>j.id===id);jobView();}
-function jobView(){const j=cur,front=role==="front";$("app").innerHTML='<button class="btn3" onclick="cur=null;render()">← 返回</button><div class="card" style="margin-top:10px"><div style="display:flex;justify-content:space-between"><div class="title">'+(NAMES[j.code]||"")+"</div>"+tag(j.status)+'</div><div class="sub">'+j.site+'</div><div class="muted">'+j.zone+" · "+j.id+'</div><div class="muted">目標 '+j.qty+" "+j.unit+" · "+j.who+" · "+j.team+"</div>"+(j.checkin?'<div class="muted">打卡 '+j.checkin+"<br>"+(j.gps||"")+"</div>":"")+'</div><div class="card"><label>實際數量（'+j.unit+'）</label><input id="qty" type="number" inputmode="decimal" value="'+(j.done||j.qty)+'" '+(front?"":"readonly")+'/><label>備註／阻礙</label><textarea id="note" rows="2" '+(front?"":"readonly")+'>'+(j.note||"")+'</textarea><div class="photos"><div><label>施工前</label><div class="ph" id="p1" onclick="'+(front?"snap('p1')":"")+'">'+(j.p1?'<img alt="" src="'+j.p1+'"/>':'＋ 拍照')+'</div></div><div><label>施工後</label><div class="ph" id="p2" onclick="'+(front?"snap('p2')":"")+'">'+(j.p2?'<img alt="" src="'+j.p2+'"/>':'＋ 拍照')+"</div></div></div></div>"+(front&&j.status==="待開工"?'<button class="btn" onclick="checkin()">① 到場打卡開始</button>':"")+(front&&j.status==="進行中"?'<button class="btn" onclick="submitJ()">② 提交完工</button>':"")+(front&&j.status==="退回"?'<button class="btn4" onclick="cur.status=\'進行中\';save();toast(\'已重新開工\');jobView()">按退回意見重做</button>':"")+(!front&&j.status==="待審核"?'<button class="btn" onclick="approve(true)">通過</button><button class="btn4" onclick="approve(false)">退回重拍／重做</button>':"");}
+const KEY="tree_records_v1";
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY));return Array.isArray(x)?x:[];}catch(e){return[];}}
+function saveAll(list){localStorage.setItem(KEY,JSON.stringify(list));}
+let records=load();
+let page="new";
+let draft={treeNo:"",note:"",info:null,before:null,after:null};
 let snapTarget=null;
-function snap(which){if(role!=="front")return;snapTarget=which;const inp=$("cam");inp.value="";inp.click();}
-function onCam(ev){const f=ev.target.files&&ev.target.files[0];if(!f||!cur||!snapTarget)return;const which=snapTarget;const reader=new FileReader();reader.onload=()=>{compressDataUrl(reader.result,1280,0.72).then(url=>{cur[which]=url;snapTarget=null;save();jobView();toast("已加入相片");}).catch(()=>{cur[which]=reader.result;snapTarget=null;save();jobView();toast("已加入相片");});};reader.onerror=()=>toast("讀取相片失敗");reader.readAsDataURL(f);}
-function compressDataUrl(dataUrl,maxW,q){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);try{resolve(c.toDataURL("image/jpeg",q));}catch(e){reject(e);}};img.onerror=reject;img.src=dataUrl;});}
-function checkin(){const done=gps=>{cur.status="進行中";cur.checkin=new Date().toLocaleString("zh-HK");cur.gps=gps;save();toast("已打卡");jobView();};if(!navigator.geolocation)return done("無定位");navigator.geolocation.getCurrentPosition(p=>done(p.coords.latitude.toFixed(5)+", "+p.coords.longitude.toFixed(5)),()=>done("未開定位（示範）"),{timeout:5000});}
-function submitJ(){cur.done=$("qty").value;cur.note=$("note").value;if(!cur.p1||!cur.p2){toast("康文署報告要前／後相");return;}cur.status="待審核";save();toast("已提交，等組長審");go("home");}
-function approve(ok){cur.status=ok?"已審核":"退回";if(!ok)cur.note=(cur.note||"")+" [組長退回：請補前後對比]";save();toast(ok?"已通過":"已退回");go("home");}
-function talk(){$("app").innerHTML='<div class="help">每張工單一條討論。以下示範廣播。</div><div class="card"><div class="title">09:10 辦公室</div><div class="sub">午後可能驟雨。高空修剪改做灌木。</div></div><div class="card"><div class="title">深水埗公園投訴</div><div class="sub">組長：近籃球場入口，先圍封再清斷枝。</div></div><label>回覆組長</label><textarea id="m" rows="2" placeholder="例如：已到場圍封"></textarea><button class="btn" onclick="toast(\'已送出（示範）\')">送出</button>';}
-function me(){const mine=role==="front"?data.filter(j=>j.team==="A隊"):data;const ok=mine.filter(j=>j.status==="已審核").length;$("app").innerHTML='<div class="card"><div class="title">'+(role==="front"?"黃麗娟 · 園藝工":"陳志強 · 組長")+'</div><div class="sub">康文署園藝保養合約（示範）</div></div><div class="kpi"><div class="card"><b>'+mine.length+'</b><span>工單</span></div><div class="card"><b>'+ok+'</b><span>已通過</span></div><div class="card"><b>'+mine.filter(j=>j.status==="退回").length+'</b><span>退回</span></div></div><div class="help"><b>加到主畫面 = 變成 App</b><br>iPhone：用 Safari 打開 → 分享 → 加入主畫面。<br>Android：用 Chrome 打開 → 選單 → 安裝應用程式／加入主畫面。</div><button class="btn2" onclick="exportCsv()">匯出工單 CSV</button><button class="btn3" onclick="if(confirm(\'重置示範？\')){localStorage.removeItem(\'epcem2\');data=JSON.parse(JSON.stringify(SEED));save();go(\'home\')}">重置示範數據</button>';}
-function exportCsv(){const h="工單,場地,位置,工種,數量,單位,人員,狀態,打卡,GPS,備註";const rows=data.map(j=>[j.id,j.site,j.zone,NAMES[j.code],j.done||j.qty,j.unit,j.who,j.status,j.checkin||"",j.gps||"",(j.note||"").replace(/,/g,";")].join(","));const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\uFEFF"+[h,...rows].join("\n")],{type:"text/csv"}));a.download="EPCEM工單.csv";a.click();}
+let viewing=null;
+
+function toast(t){const el=$("toast");el.textContent=t;el.style.display="block";setTimeout(()=>el.style.display="none",2200);}
+function go(p){page=p;viewing=null;["n-new","n-list","n-me"].forEach(id=>$(id).classList.remove("on"));({new:"n-new",list:"n-list",me:"n-me"})[p]&&$(({new:"n-new",list:"n-list",me:"n-me"})[p]).classList.add("on");render();}
+function render(){if(viewing)return viewOne(viewing);if(page==="new")viewNew();else if(page==="list")viewList();else viewMe();}
+
+function phBox(key,label){
+  const src=draft[key];
+  return '<div><label>'+label+'</label><div class="ph" onclick="snap(\''+key+'\')">'+(src?'<img alt="" src="'+src+'"/>':('＋ 拍照<small>撳呢度開相機</small>'))+'</div></div>';
+}
+
+function viewNew(){
+  $("app").innerHTML=
+    '<div class="help">輸入樹木號碼 → 可選影一張「樹木資料／樹牌」→ 再影事前、事後相 → 儲存後可一鍵分享俾公司同事。</div>'+
+    '<div class="card">'+
+      '<label>樹木號碼</label>'+
+      '<input id="treeNo" placeholder="例如 T-12345 / 樹牌編號" value="'+(draft.treeNo||"").replace(/"/g,"&quot;")+'" oninput="draft.treeNo=this.value"/>'+
+      '<label>工作備註（可選）</label>'+
+      '<textarea id="note" rows="2" placeholder="例如：修剪枯枝、除草、灌溉" oninput="draft.note=this.value">'+(draft.note||"")+'</textarea>'+
+      '<label>樹木資料相（樹牌／位置，可選）</label>'+
+      '<div class="ph" style="max-width:100%;aspect-ratio:16/10" onclick="snap(\'info\')">'+(draft.info?'<img alt="" src="'+draft.info+'"/>':'＋ 影樹牌或樹木資料')+'</div>'+
+      '<div class="photos">'+phBox("before","事前相")+phBox("after","事後相")+'</div>'+
+      '<button class="btn" onclick="saveRecord()">儲存本機紀錄</button>'+
+      '<button class="btn2" onclick="saveAndShare()">儲存並分享俾同事</button>'+
+    '</div>'+
+    '<p class="muted">相片會先壓细再存。而家先存在呢部手機；分享可用 WhatsApp／電郵／檔案 App。之後可再接公司雲端資料夾做自動上存。</p>';
+}
+
+function viewList(){
+  if(!records.length){
+    $("app").innerHTML='<div class="card empty">未有紀錄<br><button class="btn" style="margin-top:16px" onclick="go(\'new\')">建立第一筆</button></div>';
+    return;
+  }
+  const sorted=[...records].sort((a,b)=>b.ts-a.ts);
+  $("app").innerHTML='<div class="muted" style="margin:0 0 8px">本機共 '+records.length+' 筆（未自動上雲）</div>'+
+    sorted.map(r=>'<div class="card" onclick="openRec(\''+r.id+'\')"><div class="row"><div class="title">🌳 '+(r.treeNo||"無編號")+'</div><span class="tag">'+(r.shared?"已分享過":"本機")+'</span></div><div class="muted">'+(r.note||"無備註")+' · '+new Date(r.ts).toLocaleString("zh-HK")+'</div><div class="photos" style="margin-top:8px">'+
+      (r.before?'<div class="ph"><img alt="" src="'+r.before+'"/></div>':'')+
+      (r.after?'<div class="ph"><img alt="" src="'+r.after+'"/></div>':'')+
+    '</div></div>').join("");
+}
+
+function openRec(id){viewing=records.find(x=>x.id===id);if(viewing)viewOne(viewing);}
+function viewOne(r){
+  $("app").innerHTML=
+    '<button class="btn3" onclick="viewing=null;page=\'list\';render()">← 返回</button>'+
+    '<div class="card" style="margin-top:10px">'+
+      '<div class="title">樹木號碼：'+(r.treeNo||"—")+'</div>'+
+      '<div class="muted">'+new Date(r.ts).toLocaleString("zh-HK")+'</div>'+
+      '<div style="margin-top:8px">'+(r.note||"無備註")+'</div>'+
+      (r.info?'<label>樹木資料相</label><div class="ph" style="aspect-ratio:16/10"><img alt="" src="'+r.info+'"/></div>':'')+
+      '<div class="photos">'+
+        '<div><label>事前</label><div class="ph">'+(r.before?'<img alt="" src="'+r.before+'"/>':'無')+'</div></div>'+
+        '<div><label>事後</label><div class="ph">'+(r.after?'<img alt="" src="'+r.after+'"/>':'無')+'</div></div>'+
+      '</div>'+
+      '<button class="btn2" onclick="shareRecord(\''+r.id+'\')">分享俾公司同事</button>'+
+      '<button class="btn4" onclick="delRec(\''+r.id+'\')">刪除呢筆</button>'+
+    '</div>';
+}
+
+function viewMe(){
+  $("app").innerHTML=
+    '<div class="card"><div class="title">點樣交俾公司同事？</div>'+
+    '<p class="muted" style="margin:8px 0 0">1. 前線撳「儲存並分享俾同事」<br>2. 選 WhatsApp／電郵／Drive 等<br>3. 會帶上樹木號碼、備註、事前事後相</p>'+
+    '<p class="muted">而家未接公司共用雲端；同事唔會自動喺另一部手機見到。要自動上存，下一步可接 Google Drive 共用資料夾或 Firebase。</p></div>'+
+    '<div class="card"><div class="title">加到主畫面</div><p class="muted">iPhone：Safari → 分享 → 加入主畫面<br>Android：Chrome → 選單 → 安裝應用程式</p></div>'+
+    '<div class="card"><div class="title">網址</div><p class="muted">https://davychan188.github.io/epcem-app/</p></div>'+
+    '<button class="btn3" onclick="if(confirm(\'清除全部本機樹木紀錄？\')){records=[];saveAll(records);toast(\'已清除\');go(\'list\')}">清除全部本機紀錄</button>';
+}
+
+function snap(which){snapTarget=which;const inp=$("cam");inp.value="";inp.click();}
+function onCam(ev){
+  const f=ev.target.files&&ev.target.files[0];
+  if(!f||!snapTarget)return;
+  const which=snapTarget;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    compressDataUrl(reader.result,1280,0.72).then(url=>{
+      draft[which]=url;snapTarget=null;render();toast("已加入相片");
+    }).catch(()=>{draft[which]=reader.result;snapTarget=null;render();toast("已加入相片");});
+  };
+  reader.onerror=()=>toast("讀取相片失敗");
+  reader.readAsDataURL(f);
+}
+function compressDataUrl(dataUrl,maxW,q){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      const c=document.createElement("canvas");c.width=w;c.height=h;
+      c.getContext("2d").drawImage(img,0,0,w,h);
+      try{resolve(c.toDataURL("image/jpeg",q));}catch(e){reject(e);}
+    };
+    img.onerror=reject;img.src=dataUrl;
+  });
+}
+
+function validate(){
+  if(!String(draft.treeNo||"").trim()){toast("請先填樹木號碼");return false;}
+  if(!draft.before||!draft.after){toast("請影齊事前同事後相");return false;}
+  return true;
+}
+function buildRecord(){
+  return {
+    id:"TR-"+Date.now(),
+    treeNo:String(draft.treeNo||"").trim(),
+    note:String(draft.note||"").trim(),
+    info:draft.info||null,
+    before:draft.before,
+    after:draft.after,
+    ts:Date.now(),
+    shared:false
+  };
+}
+function resetDraft(){draft={treeNo:"",note:"",info:null,before:null,after:null};}
+function saveRecord(){
+  if(!validate())return;
+  const r=buildRecord();
+  records.unshift(r);saveAll(records);resetDraft();
+  toast("已儲存本機");go("list");
+}
+async function saveAndShare(){
+  if(!validate())return;
+  const r=buildRecord();
+  records.unshift(r);saveAll(records);resetDraft();
+  await shareRecord(r.id,true);
+  go("list");
+}
+
+function dataUrlToFile(dataUrl,name){
+  const [head,b64]=dataUrl.split(",");
+  const mime=(head.match(/data:(.*?);/)||[])[1]||"image/jpeg";
+  const bin=atob(b64);const arr=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+  return new File([arr],name,{type:mime});
+}
+
+async function shareRecord(id,fromSave){
+  const r=records.find(x=>x.id===id);if(!r)return;
+  const text="樹木工作紀錄\n樹木號碼："+r.treeNo+"\n時間："+new Date(r.ts).toLocaleString("zh-HK")+"\n備註："+(r.note||"—")+"\n（附事前／事後相"+(r.info?"＋樹木資料相":"）");
+  const files=[];
+  try{
+    if(r.info)files.push(dataUrlToFile(r.info,r.treeNo+"_資料.jpg"));
+    if(r.before)files.push(dataUrlToFile(r.before,r.treeNo+"_事前.jpg"));
+    if(r.after)files.push(dataUrlToFile(r.after,r.treeNo+"_事後.jpg"));
+  }catch(e){}
+  try{
+    if(navigator.canShare&&files.length&&navigator.canShare({files})){
+      await navigator.share({title:"樹木 "+r.treeNo,text,files});
+    }else if(navigator.share){
+      await navigator.share({title:"樹木 "+r.treeNo,text});
+      // also trigger downloads as fallback for photos
+      files.forEach(f=>{const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click();});
+    }else{
+      files.forEach(f=>{const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click();});
+      await navigator.clipboard.writeText(text).catch(()=>{});
+      toast("已下載相片；文字已複製");
+    }
+    r.shared=true;saveAll(records);
+    toast(fromSave?"已儲存，請選點樣傳俾同事":"請選點樣傳俾同事");
+  }catch(e){
+    if(e&&e.name==="AbortError"){toast("已取消分享");return;}
+    files.forEach(f=>{const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click();});
+    toast("已改為下載相片，請自行傳俾同事");
+    r.shared=true;saveAll(records);
+  }
+  if(viewing)viewOne(r);
+}
+
+function delRec(id){
+  if(!confirm("刪除呢筆紀錄？"))return;
+  records=records.filter(x=>x.id!==id);saveAll(records);viewing=null;toast("已刪除");go("list");
+}
+
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
-setRole(role);
+go("new");
 </script>
 </body>
 </html>

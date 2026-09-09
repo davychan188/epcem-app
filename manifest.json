@@ -1,6 +1,6 @@
 {
-  "name": "EPCEM 康文署前線",
-  "short_name": "EPCEM",
+  "name": "樹木工作紀錄",
+  "short_name": "樹木紀錄",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1B5E20",
@@ -13,5 +13,6 @@
       "type": "image/svg+xml",
       "purpose": "any"
     }
-  ]
+  ],
+  "description": "前線樹木號碼與事前事後相片紀錄"
 }

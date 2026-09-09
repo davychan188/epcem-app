@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="36" fill="#1B5E20"/>
+  <circle cx="96" cy="78" r="28" fill="#A5D6A7"/>
+  <rect x="88" y="100" width="16" height="48" fill="#A5D6A7"/>
+  <text x="96" y="178" text-anchor="middle" fill="white" font-size="18" font-family="sans-serif">EPCEM</text>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "name": "EPCEM 康文署前線",
+  "short_name": "EPCEM",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1B5E20",
+  "theme_color": "#1B5E20",
+  "lang": "zh-Hant",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -47,7 +47,7 @@ nav span{display:block;font-size:18px;margin-bottom:2px}
 <body>
 <header>
   <h1>樹木工作紀錄</h1>
-  <p>前線用 · 樹木號碼 + 事前／事後相 · 可分享俾公司</p>
+  <p>前線用 · 樹木號碼 + 事前／事後相 · 可分享俾公司 · v2</p>
 </header>
 <main id="app"></main>
 <nav>
@@ -240,7 +240,7 @@ function delRec(id){
   records=records.filter(x=>x.id!==id);saveAll(records);viewing=null;toast("已刪除");go("list");
 }
 
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=2").catch(()=>{});
 go("new");
 </script>
 </body>

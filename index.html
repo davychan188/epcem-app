@@ -47,7 +47,7 @@ nav span{display:block;font-size:18px;margin-bottom:2px}
 <body>
 <header>
   <h1>樹木工作紀錄</h1>
-  <p>前線用 · 樹木號碼 + 事前／事後相 · 可分享俾公司 · v2</p>
+  <p>前線用 · 樹木號碼 + 事前／事後相 · 可分享俾公司 · v3</p>
 </header>
 <main id="app"></main>
 <nav>
@@ -60,6 +60,9 @@ nav span{display:block;font-size:18px;margin-bottom:2px}
 <script>
 const $=id=>document.getElementById(id);
 const KEY="tree_records_v1";
+const UPLOAD_KEY="tree_upload_url_v1";
+function getUploadUrl(){return (localStorage.getItem(UPLOAD_KEY)||"").trim();}
+function setUploadUrl(u){localStorage.setItem(UPLOAD_KEY,(u||"").trim());}
 function load(){try{const x=JSON.parse(localStorage.getItem(KEY));return Array.isArray(x)?x:[];}catch(e){return[];}}
 function saveAll(list){localStorage.setItem(KEY,JSON.stringify(list));}
 let records=load();
@@ -88,8 +91,9 @@ function viewNew(){
       '<label>樹木資料相（樹牌／位置，可選）</label>'+
       '<div class="ph" style="max-width:100%;aspect-ratio:16/10" onclick="snap(\'info\')">'+(draft.info?'<img alt="" src="'+draft.info+'"/>':'＋ 影樹牌或樹木資料')+'</div>'+
       '<div class="photos">'+phBox("before","事前相")+phBox("after","事後相")+'</div>'+
-      '<button class="btn" onclick="saveRecord()">儲存本機紀錄</button>'+
-      '<button class="btn2" onclick="saveAndShare()">儲存並分享俾同事</button>'+
+      '<button class="btn" onclick="saveAndUpload()">儲存並上存公司資料夾</button>'+
+      '<button class="btn2" onclick="saveAndShare()">儲存並系統分享</button>'+
+      '<button class="btn3" onclick="saveRecord()">只儲存本機</button>'+
     '</div>'+
     '<p class="muted">相片會先壓细再存。而家先存在呢部手機；分享可用 WhatsApp／電郵／檔案 App。之後可再接公司雲端資料夾做自動上存。</p>';
 }
@@ -101,7 +105,7 @@ function viewList(){
   }
   const sorted=[...records].sort((a,b)=>b.ts-a.ts);
   $("app").innerHTML='<div class="muted" style="margin:0 0 8px">本機共 '+records.length+' 筆（未自動上雲）</div>'+
-    sorted.map(r=>'<div class="card" onclick="openRec(\''+r.id+'\')"><div class="row"><div class="title">🌳 '+(r.treeNo||"無編號")+'</div><span class="tag">'+(r.shared?"已分享過":"本機")+'</span></div><div class="muted">'+(r.note||"無備註")+' · '+new Date(r.ts).toLocaleString("zh-HK")+'</div><div class="photos" style="margin-top:8px">'+
+    sorted.map(r=>'<div class="card" onclick="openRec(\''+r.id+'\')"><div class="row"><div class="title">🌳 '+(r.treeNo||"無編號")+'</div><span class="tag">'+(r.uploaded?"已上存":(r.shared?"已分享":"本機"))+'</span></div><div class="muted">'+(r.note||"無備註")+' · '+new Date(r.ts).toLocaleString("zh-HK")+'</div><div class="photos" style="margin-top:8px">'+
       (r.before?'<div class="ph"><img alt="" src="'+r.before+'"/></div>':'')+
       (r.after?'<div class="ph"><img alt="" src="'+r.after+'"/></div>':'')+
     '</div></div>').join("");
@@ -126,12 +130,16 @@ function viewOne(r){
 }
 
 function viewMe(){
+  const url=getUploadUrl();
   $("app").innerHTML=
-    '<div class="card"><div class="title">點樣交俾公司同事？</div>'+
-    '<p class="muted" style="margin:8px 0 0">1. 前線撳「儲存並分享俾同事」<br>2. 選 WhatsApp／電郵／Drive 等<br>3. 會帶上樹木號碼、備註、事前事後相</p>'+
-    '<p class="muted">而家未接公司共用雲端；同事唔會自動喺另一部手機見到。要自動上存，下一步可接 Google Drive 共用資料夾或 Firebase。</p></div>'+
+    '<div class="card"><div class="title">上存去公司資料夾（Share link）</div>'+
+    '<p class="muted" style="margin:8px 0">貼上公司用 Google Apps Script 產生嘅<strong>上存網址</strong>。前線撳上存後，相片同紀錄會入指定 Drive 資料夾，同事打開個資料夾就睇到。</p>'+
+    '<label>上存網址</label>'+
+    '<textarea id="uploadUrl" rows="3" placeholder="https://script.google.com/macros/s/……/exec">'+(url||"")+'</textarea>'+
+    '<button class="btn2" onclick="setUploadUrl($(\'uploadUrl\').value);toast(getUploadUrl()?\'已儲存上存網址\':\'已清空\');render()">儲存上存網址</button>'+
+    '<p class="muted" style="margin-top:8px">設定步驟見說明頁 docs，或問管理員要網址。未設定就只可以用「系統分享」。</p></div>'+
     '<div class="card"><div class="title">加到主畫面</div><p class="muted">iPhone：Safari → 分享 → 加入主畫面<br>Android：Chrome → 選單 → 安裝應用程式</p></div>'+
-    '<div class="card"><div class="title">網址</div><p class="muted">https://davychan188.github.io/epcem-app/</p></div>'+
+    '<div class="card"><div class="title">App 網址</div><p class="muted">https://davychan188.github.io/epcem-app/</p></div>'+
     '<button class="btn3" onclick="if(confirm(\'清除全部本機樹木紀錄？\')){records=[];saveAll(records);toast(\'已清除\');go(\'list\')}">清除全部本機紀錄</button>';
 }
 
@@ -235,12 +243,68 @@ async function shareRecord(id,fromSave){
   if(viewing)viewOne(r);
 }
 
+
+async function saveAndUpload(){
+  if(!validate())return;
+  if(!getUploadUrl()){toast("請先去「說明」貼上存網址");go("me");return;}
+  const r=buildRecord();
+  records.unshift(r);saveAll(records);resetDraft();
+  await uploadRecord(r.id);
+  go("list");
+}
+
+function stripDataUrl(dataUrl){
+  if(!dataUrl)return null;
+  const i=dataUrl.indexOf(",");
+  return i>=0?dataUrl.slice(i+1):dataUrl;
+}
+
+async function uploadRecord(id){
+  const r=records.find(x=>x.id===id);if(!r)return;
+  const endpoint=getUploadUrl();
+  if(!endpoint){toast("未設定上存網址");go("me");return;}
+  toast("上存中…");
+  const payload={
+    id:r.id,
+    treeNo:r.treeNo,
+    note:r.note||"",
+    ts:r.ts,
+    timeText:new Date(r.ts).toLocaleString("zh-HK"),
+    info:stripDataUrl(r.info),
+    before:stripDataUrl(r.before),
+    after:stripDataUrl(r.after)
+  };
+  try{
+    const res=await fetch(endpoint,{
+      method:"POST",
+      // text/plain avoids CORS preflight with Apps Script
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(payload)
+    });
+    const text=await res.text();
+    let data={};
+    try{data=JSON.parse(text);}catch(e){data={raw:text};}
+    if(!res.ok || data.ok===false){
+      toast("上存失敗："+(data.error||res.status));
+      return;
+    }
+    r.shared=true;r.uploaded=true;r.uploadAt=Date.now();
+    if(data.folderUrl)r.folderUrl=data.folderUrl;
+    saveAll(records);
+    toast("已上存公司資料夾");
+    if(viewing)viewOne(r);
+  }catch(e){
+    console.error(e);
+    toast("上存失敗，請檢查網址或網絡");
+  }
+}
+
 function delRec(id){
   if(!confirm("刪除呢筆紀錄？"))return;
   records=records.filter(x=>x.id!==id);saveAll(records);viewing=null;toast("已刪除");go("list");
 }
 
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=2").catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=3").catch(()=>{});
 go("new");
 </script>
 </body>

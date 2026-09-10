@@ -50,7 +50,7 @@ nav span{display:block;font-size:18px;margin-bottom:2px}
 <body>
 <header>
   <h1>樹木工作紀錄</h1>
-  <p>前線用 · 多選合併分享 · 相片含日期／事前事後 · v5</p>
+  <p>前線用 · 多選合併分享 · 相片含日期／事前事後 · v6</p>
 </header>
 <main id="app"></main>
 <nav>
@@ -88,7 +88,7 @@ function phBox(key,label){
 
 function viewNew(){
   $("app").innerHTML=
-    '<div class="help">輸入樹木號碼 → 影事前／事後相（可選樹牌）→ 儲存。分享時相機會印上<strong>日期</strong>同<strong>事前／事後</strong>說明；本機紀錄可一次揀多筆合併成一個 ZIP。</div>'+
+    '<div class="help">可以<strong>先只影事前</strong>再儲存，之後喺「本機紀錄」打開再補<strong>事後</strong>。分享／上存前最好齊兩張。相片會印日期同事前／事後說明。</div>'+
     '<div class="card">'+
       '<label>樹木號碼</label>'+
       '<input id="treeNo" placeholder="例如 T-12345 / 樹牌編號" value="'+(draft.treeNo||"").replace(/"/g,"&quot;")+'" oninput="draft.treeNo=this.value"/>'+
@@ -97,9 +97,9 @@ function viewNew(){
       '<label>樹木資料相（樹牌／位置，可選）</label>'+
       '<div class="ph" style="max-width:100%;aspect-ratio:16/10" onclick="snap(\'info\')">'+(draft.info?'<img alt="" src="'+draft.info+'"/>':'＋ 影樹牌或樹木資料')+'</div>'+
       '<div class="photos">'+phBox("before","事前相")+phBox("after","事後相")+'</div>'+
-      '<button class="btn" onclick="saveAndUpload()">儲存並上存公司資料夾</button>'+
-      '<button class="btn2" onclick="saveAndShare()">儲存並系統分享</button>'+
-      '<button class="btn3" onclick="saveRecord()">只儲存本機</button>'+
+      '<button class="btn" onclick="saveRecord()">儲存本機（可稍後補事後）</button>'+
+      '<button class="btn2" onclick="saveAndShare()">齊相後分享</button>'+
+      '<button class="btn3" onclick="saveAndUpload()">齊相後上存公司</button>'+
     '</div>';
 }
 
@@ -123,7 +123,7 @@ function viewList(){
           '<label style="margin:0;display:flex;align-items:center;gap:8px;font-weight:700" onclick="event.stopPropagation()">'+
             '<input class="check" type="checkbox" '+(on?"checked":"")+' onchange="toggleSel(\''+r.id+'\',this.checked)"/>🌳 '+(r.treeNo||"無編號")+
           '</label>'+
-          '<span class="tag">'+(r.uploaded?"已上存":(r.shared?"已分享":"本機"))+'</span>'+
+          '<span class="tag">'+(!(r.before&&r.after)?"待補相":(r.uploaded?"已上存":(r.shared?"已分享":"本機")))+'</span>'+
         '</div>'+
         '<div class="muted" style="margin-top:6px" onclick="openRec(\''+r.id+'\')">'+(r.note||"無備註")+' · '+fmt(r.ts)+' · 撳睇詳情</div>'+
         '<div class="photos" style="margin-top:8px" onclick="openRec(\''+r.id+'\')">'+
@@ -138,24 +138,28 @@ function toggleSelectAll(){if(selected.size===records.length)selected=new Set();
 
 function openRec(id){viewing=records.find(x=>x.id===id);if(viewing)viewOne(viewing);}
 function viewOne(r){
+  const incomplete=!r.before||!r.after;
   $("app").innerHTML=
     '<button class="btn3" onclick="viewing=null;page=\'list\';render()">← 返回</button>'+
     '<div class="card" style="margin-top:10px">'+
       '<div class="title">樹木號碼：'+(r.treeNo||"—")+'</div>'+
-      '<div class="muted">'+fmt(r.ts)+'</div>'+
-      '<div style="margin-top:8px">'+(r.note||"無備註")+'</div>'+
-      (r.info?'<label>樹木資料相</label><div class="ph" style="aspect-ratio:16/10"><img alt="" src="'+r.info+'"/></div>':'')+
+      '<div class="muted">'+fmt(r.ts)+(incomplete?' · <b>未齊事前／事後</b>':'')+'</div>'+
+      '<label>備註</label>'+
+      '<textarea id="editNote" rows="2" onchange="updateRecField(\''+r.id+'\',\'note\',this.value)">'+(r.note||'')+'</textarea>'+
+      '<label>樹木資料相（可補）</label>'+
+      '<div class="ph" style="aspect-ratio:16/10" onclick="snapEdit(\''+r.id+'\',\'info\')">'+(r.info?'<img alt="" src="'+r.info+'"/>':'＋ 補影樹牌／資料')+'</div>'+
       '<div class="photos">'+
-        '<div><label>事前</label><div class="ph">'+(r.before?'<img alt="" src="'+r.before+'"/>':'無')+'</div></div>'+
-        '<div><label>事後</label><div class="ph">'+(r.after?'<img alt="" src="'+r.after+'"/>':'無')+'</div></div>'+
+        '<div><label>事前'+(r.before?'':'（未有）')+'</label><div class="ph" onclick="snapEdit(\''+r.id+'\',\'before\')">'+(r.before?'<img alt="" src="'+r.before+'"/>':'＋ 影／補事前')+'</div></div>'+
+        '<div><label>事後'+(r.after?'':'（未有）')+'</label><div class="ph" onclick="snapEdit(\''+r.id+'\',\'after\')">'+(r.after?'<img alt="" src="'+r.after+'"/>':'＋ 影／補事後')+'</div></div>'+
       '</div>'+
-      '<button class="btn" onclick="uploadRecord(\''+r.id+'\')">上存去公司資料夾</button>'+
-      '<button class="btn2" onclick="shareRecord(\''+r.id+'\')">分享呢筆（含說明相）</button>'+
+      '<button class="btn" onclick="uploadRecord(\''+r.id+'\')" '+((r.before&&r.after)?'':'disabled')+'>上存去公司資料夾</button>'+
+      '<button class="btn2" onclick="shareRecord(\''+r.id+'\')" '+((r.before&&r.after)?'':'disabled')+'>分享呢筆（含說明相）</button>'+
       '<button class="btn4" onclick="delRec(\''+r.id+'\')">刪除呢筆</button>'+
+      (incomplete?'<p class="muted">未齊兩張相時唔可以分享／上存；撳上面空格補相即可。</p>':'')+
     '</div>';
 }
 
-function viewMe(){
+function viewMefunction viewMe(){
   const url=getUploadUrl();
   $("app").innerHTML=
     '<div class="card"><div class="title">一次分享多棵樹</div>'+
@@ -168,16 +172,29 @@ function viewMe(){
     '<button class="btn3" onclick="if(confirm(\'清除全部本機樹木紀錄？\')){records=[];selected=new Set();saveAll(records);toast(\'已清除\');go(\'list\')}">清除全部本機紀錄</button>';
 }
 
-function snap(which){snapTarget=which;const inp=$("cam");inp.value="";inp.click();}
+let editTarget=null; // {id, which}
+function updateRecField(id,field,val){
+  const r=records.find(x=>x.id===id); if(!r)return;
+  r[field]=val; saveAll(records);
+}
+function snapEdit(id,which){editTarget={id,which}; snapTarget=null; const inp=$("cam"); inp.value=""; inp.click();}
+function snap(which){editTarget=null; snapTarget=which;const inp=$("cam");inp.value="";inp.click();}
 function onCam(ev){
   const f=ev.target.files&&ev.target.files[0];
-  if(!f||!snapTarget)return;
-  const which=snapTarget;
+  if(!f)return;
+  if(!snapTarget && !editTarget)return;
   const reader=new FileReader();
   reader.onload=()=>{
-    compressDataUrl(reader.result,1280,0.72).then(url=>{
-      draft[which]=url;snapTarget=null;render();toast("已加入相片");
-    }).catch(()=>{draft[which]=reader.result;snapTarget=null;render();toast("已加入相片");});
+    const apply=url=>{
+      if(editTarget){
+        const r=records.find(x=>x.id===editTarget.id);
+        if(r){r[editTarget.which]=url; saveAll(records); toast(editTarget.which==="after"?"已補事後相":(editTarget.which==="before"?"已補事前相":"已補相片"));}
+        const stay=editTarget.id; editTarget=null; viewing=records.find(x=>x.id===stay); render();
+        return;
+      }
+      draft[snapTarget]=url; snapTarget=null; render(); toast("已加入相片");
+    };
+    compressDataUrl(reader.result,1280,0.72).then(apply).catch(()=>apply(reader.result));
   };
   reader.onerror=()=>toast("讀取相片失敗");
   reader.readAsDataURL(f);
@@ -261,9 +278,11 @@ function dataUrlToUint8(dataUrl){
   return arr;
 }
 
-function validate(){
+function validate(opts){
+  opts=opts||{};
   if(!String(draft.treeNo||"").trim()){toast("請先填樹木號碼");return false;}
-  if(!draft.before||!draft.after){toast("請影齊事前同事後相");return false;}
+  if(!draft.before && !draft.after && !draft.info){toast("請至少影一張相（可先只影事前）");return false;}
+  if(opts.requireBoth && (!draft.before||!draft.after)){toast("分享／上存前請影齊事前同事後相");return false;}
   return true;
 }
 function buildRecord(){
@@ -286,7 +305,7 @@ function saveRecord(){
   toast("已儲存本機");go("list");
 }
 async function saveAndShare(){
-  if(!validate())return;
+  if(!validate({requireBoth:true}))return;
   const r=buildRecord();
   records.unshift(r);saveAll(records);resetDraft();
   await shareRecord(r.id,true);
@@ -295,6 +314,7 @@ async function saveAndShare(){
 
 async function shareRecord(id,fromSave){
   const r=records.find(x=>x.id===id);if(!r)return;
+  if(!r.before||!r.after){toast("請先補齊事前同事後相");return;}
   toast("準備相片說明中…");
   let stamped=[];
   try{stamped=await stampedFilesForRecord(r);}catch(e){console.error(e);toast("處理相片失敗");return;}
@@ -373,7 +393,7 @@ async function shareSelectedZip(){
 }
 
 async function saveAndUpload(){
-  if(!validate())return;
+  if(!validate({requireBoth:true}))return;
   if(!getUploadUrl()){toast("請先去「說明」貼上存網址");go("me");return;}
   const r=buildRecord();
   records.unshift(r);saveAll(records);resetDraft();
@@ -387,6 +407,7 @@ function stripDataUrl(dataUrl){
 }
 async function uploadRecord(id){
   const r=records.find(x=>x.id===id);if(!r)return;
+  if(!r.before||!r.after){toast("請先補齊事前同事後相");return;}
   const endpoint=getUploadUrl();
   if(!endpoint){toast("未設定上存網址");go("me");return;}
   toast("準備上存（含說明）…");
@@ -415,7 +436,7 @@ function delRec(id){
   records=records.filter(x=>x.id!==id);selected.delete(id);saveAll(records);viewing=null;toast("已刪除");go("list");
 }
 
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=5").catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=6").catch(()=>{});
 go("new");
 </script>
 </body>

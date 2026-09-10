@@ -50,7 +50,7 @@ nav span{display:block;font-size:18px;margin-bottom:2px}
 <body>
 <header>
   <h1>樹木工作紀錄</h1>
-  <p>前線用 · 多選合併分享 · 相片含日期／事前事後 · v6</p>
+  <p>前線用 · 多選合併分享 · 相片含日期／事前事後 · v7</p>
 </header>
 <main id="app"></main>
 <nav>
@@ -159,7 +159,7 @@ function viewOne(r){
     '</div>';
 }
 
-function viewMefunction viewMe(){
+function viewMe(){
   const url=getUploadUrl();
   $("app").innerHTML=
     '<div class="card"><div class="title">一次分享多棵樹</div>'+
@@ -436,7 +436,7 @@ function delRec(id){
   records=records.filter(x=>x.id!==id);selected.delete(id);saveAll(records);viewing=null;toast("已刪除");go("list");
 }
 
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=6").catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=7").catch(()=>{});
 go("new");
 </script>
 </body>

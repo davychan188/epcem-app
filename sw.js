@@ -1,5 +1,5 @@
-const CACHE = "tree-log-v4";
-const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg"];
+const CACHE = "tree-log-v5";
+const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg", "./jszip.min.js"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));

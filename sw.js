@@ -1,4 +1,4 @@
-const CACHE = "tree-log-v3";
+const CACHE = "tree-log-v4";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", e => {

@@ -50,7 +50,7 @@ nav span{display:block;font-size:18px;margin-bottom:2px}
 <body>
 <header>
   <h1>樹木工作紀錄</h1>
-  <p>前線用 · 多選合併分享 · 相片含日期／事前事後 · v7</p>
+  <p>前線用 · 多選合併分享 · 相片含日期／事前事後 · v8</p>
 </header>
 <main id="app"></main>
 <nav>
@@ -115,7 +115,7 @@ function viewList(){
       '<button class="btn sm btn3" onclick="toggleSelectAll()">'+ (n===records.length?"取消全選":"全選") +'</button>'+
       '<button class="btn sm" '+(n?"":"disabled")+' onclick="shareSelectedZip()">合併分享（'+n+'）</button>'+
     '</div>'+
-    '<div class="muted" style="margin:0 0 8px">剔選多筆 → 合成<strong>一個 ZIP</strong>（入面每張相有日期同事前／事後說明）</div>'+
+    '<div class="muted" style="margin:0 0 8px">剔選多筆 → 合成<strong>一個 ZIP</strong>（解壓後同一層見到全部已命名相片）</div>'+
     sorted.map(r=>{
       const on=selected.has(r.id);
       return '<div class="card '+(on?"sel":"")+'">'+
@@ -163,7 +163,7 @@ function viewMe(){
   const url=getUploadUrl();
   $("app").innerHTML=
     '<div class="card"><div class="title">一次分享多棵樹</div>'+
-    '<p class="muted" style="margin:8px 0 0">去「本機紀錄」剔選多筆 →「合併分享」→ 會產出一個 ZIP：每棵樹一個資料夾，相片已印<strong>事前／事後</strong>同<strong>日期</strong>，另有摘要文字。</p></div>'+
+    '<p class="muted" style="margin:8px 0 0">去「本機紀錄」剔選多筆 →「合併分享」→ 會產出一個 ZIP：解壓後同一層全部相片（檔名含樹木號碼＋事前／事後＋日期），另有摘要文字。</p></div>'+
     '<div class="card"><div class="title">上存去公司資料夾</div>'+
     '<label>上存網址</label>'+
     '<textarea id="uploadUrl" rows="3" placeholder="https://script.google.com/macros/s/……/exec">'+(url||"")+'</textarea>'+
@@ -350,16 +350,24 @@ async function shareSelectedZip(){
   const downloadBlob=(blob,name)=>{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);};
   try{
     const zip=new JSZip();
-    const lines=["樹木工作紀錄合併包","產生時間："+fmt(Date.now()),"共 "+list.length+" 筆","",""];
+    const lines=["樹木工作紀錄合併包","產生時間："+fmt(Date.now()),"共 "+list.length+" 筆","（解壓後所有相片喺同一層，靠檔名分辨）","",""];
     const sorted=[...list].sort((a,b)=>a.ts-b.ts);
+    const used=new Set();
+    const unique=(base)=>{
+      let n=base,i=2;
+      while(used.has(n)){n=base.replace(/(\.jpg)$/,"_"+i+"$1"); i++;}
+      used.add(n); return n;
+    };
     for(const r of sorted){
-      const folder=zip.folder(safeName(r.treeNo)+"_"+String(r.ts));
       const stamped=await stampedFilesForRecord(r);
+      const day=safeName(fmt(r.ts).replace(/[\\/\s:]/g,"-"));
+      const tree=safeName(r.treeNo);
       for(const f of stamped){
         if(!f.dataUrl) continue;
-        folder.file(f.name, dataUrlToUint8(f.dataUrl));
+        const kind={before:"事前",after:"事後",info:"樹木資料"}[f.kind]||f.kind;
+        const fname=unique(tree+"_"+kind+"_"+day+".jpg");
+        zip.file(fname, dataUrlToUint8(f.dataUrl));
       }
-      folder.file("紀錄.txt","樹木號碼："+r.treeNo+"\n時間："+fmt(r.ts)+"\n備註："+(r.note||"—")+"\n相片：事前／事後已印說明同日期\n");
       lines.push("- "+r.treeNo+" | "+fmt(r.ts)+" | "+(r.note||"—"));
     }
     zip.file("摘要.txt", lines.join("\n"));
@@ -436,7 +444,7 @@ function delRec(id){
   records=records.filter(x=>x.id!==id);selected.delete(id);saveAll(records);viewing=null;toast("已刪除");go("list");
 }
 
-if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=7").catch(()=>{});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js?v=8").catch(()=>{});
 go("new");
 </script>
 </body>
